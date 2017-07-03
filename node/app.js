@@ -64,14 +64,11 @@ app.post( "/fb_webhook", ( req, res ) => {
     // Iterate over each entry
     // There may be multiple if batched
         data.entry.forEach( ( pageEntry ) => {
-            const pageID = pageEntry.id;
-            const timeOfEvent = pageEntry.time;
+            // const pageID = pageEntry.id;
+            // const timeOfEvent = pageEntry.time;
 
       // Iterate over each messaging event
-            console.log( "what are to be for eached?", pageEntry.messaging );
-            console.log( "what are to be for eached?", JSON.stringify( pageEntry.messaging ) );
             pageEntry.messaging.forEach( ( messagingEvent ) => {
-                console.log( "whats in this messaging event? ----------", messagingEvent );
                 if ( messagingEvent.optin ) {
                     receivedAuthentication( messagingEvent );
                 } else if ( messagingEvent.message ) {
@@ -155,7 +152,6 @@ function receivedAuthentication( event ) {
  *
  */
 function receivedMessage( event ) {
-    console.log( "whats the received message event param?", event );
     const senderID = event.sender.id;
     const recipientID = event.recipient.id;
     const timeOfMessage = event.timestamp;
@@ -163,7 +159,6 @@ function receivedMessage( event ) {
 
     console.log( "Received message for user %d and page %d at %d with message:",
     senderID, recipientID, timeOfMessage );
-    console.log( JSON.stringify( message ) );
 
     const isEcho = message.is_echo;
     const messageId = message.mid;
@@ -242,10 +237,6 @@ function receivedMessage( event ) {
     //     sendTypingOff(senderID);
     //     break;
 
-    //   case 'account linking':
-    //     sendAccountLinking(senderID);
-    //     break;
-
         default:
             sendTextMessage( senderID, messageText );
         }
@@ -262,12 +253,12 @@ function receivedMessage( event ) {
  *
  */
 function receivedDeliveryConfirmation( event ) {
-    const senderID = event.sender.id;
-    const recipientID = event.recipient.id;
+    // const senderID = event.sender.id;
+    // const recipientID = event.recipient.id;
     const delivery = event.delivery;
     const messageIDs = delivery.mids;
     const watermark = delivery.watermark;
-    const sequenceNumber = delivery.seq;
+    // const sequenceNumber = delivery.seq;
 
     if ( messageIDs ) {
         messageIDs.forEach( ( messageID ) => {
@@ -311,8 +302,8 @@ function receivedPostback( event ) {
  *
  */
 function receivedMessageRead( event ) {
-    const senderID = event.sender.id;
-    const recipientID = event.recipient.id;
+    // const senderID = event.sender.id;
+    // const recipientID = event.recipient.id;
 
   // All messages before watermark (a timestamp) or sequence have been seen.
     const watermark = event.read.watermark;
@@ -349,12 +340,12 @@ function callSendAPI( messageData ) {
             const messageId = body.message_id;
 
             if ( messageId ) {
-              console.log( "Successfully sent message with id %s to recipient %s",
+                console.log( "Successfully sent message with id %s to recipient %s",
               messageId, recipientId );
-          } else {
-              console.log( "Successfully called Send API for recipient %s",
+            } else {
+                console.log( "Successfully called Send API for recipient %s",
               recipientId );
-          }
+            }
         } else {
             console.error( "Failed calling Send API",
             response.statusCode, response.statusMessage, body.error );
