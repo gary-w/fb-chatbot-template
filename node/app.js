@@ -59,15 +59,9 @@ app.get( "/fb_webhook", ( req, res ) => {
 
 app.post( "/fb_webhook", ( req, res ) => {
     const data = req.body;
-  // Make sure this is a page subscription
-    if ( data.object === "page" ) {
-    // Iterate over each entry
-    // There may be multiple if batched
-        data.entry.forEach( ( pageEntry ) => {
-            // const pageID = pageEntry.id;
-            // const timeOfEvent = pageEntry.time;
 
-      // Iterate over each messaging event
+    if ( data.object === "page" ) {
+        data.entry.forEach( ( pageEntry ) => {
             pageEntry.messaging.forEach( ( messagingEvent ) => {
                 if ( messagingEvent.optin ) {
                     receivedAuthentication( messagingEvent );
@@ -85,11 +79,7 @@ app.post( "/fb_webhook", ( req, res ) => {
             } );
         } );
 
-    // Assume all went well.
-    //
-    // You must send back a 200, within 20 seconds, to let us know you've
-    // successfully received the callback. Otherwise, the request will time out.
-        res.sendStatus( 200 );
+        res.sendStatus( 200 ); // send back a 200 within 20 seconds.
     }
 } );
 
@@ -100,7 +90,6 @@ const verifyRequestSignature = ( req, res, buf ) => {
         console.error( "Couldn't validate the signature." );
     } else {
         const elements = signature.split( "=" );
-        // const method = elements[ 0 ];
         const signatureHash = elements[ 1 ];
 
         const expectedHash = crypto.createHmac( "sha1", APP_SECRET )
