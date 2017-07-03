@@ -2,8 +2,13 @@ const express = require( "express" );
 const request = require( "request" );
 const bodyParser = require( "body-parser" );
 const config = require( "config" );
+const dotenv = require( "dotenv" );
+const path = require( "path" );
 
 const app = express();
+
+dotenv.config( { path: path.join( __dirname, "../.env" ) } );
+dotenv.load();
 
 app.set( "port", process.env.PORT || 1337 );
 // app.set( "view engine", "ejs" );
