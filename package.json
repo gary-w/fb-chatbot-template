@@ -18,6 +18,7 @@
   "homepage": "https://github.com/gary-w/fb-chatbot-template#readme",
   "dependencies": {
     "body-parser": "^1.17.2",
+    "config": "^1.26.1",
     "express": "^4.15.3",
     "node": "0.0.0",
     "request": "^2.81.0"
