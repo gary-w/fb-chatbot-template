@@ -45,6 +45,7 @@ if ( !( APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL ) ) {
 app.get( "/", ( req, res ) => {
     res.status( 200 ).send( "This is a Fb chatbot." );
 } );
+
 app.get( "/fb_webhook", ( req, res ) => {
     if ( req.query[ "hub.mode" ] === "subscribe" &&
       req.query[ "hub.verify_token" ] === VALIDATION_TOKEN ) {
@@ -58,7 +59,6 @@ app.get( "/fb_webhook", ( req, res ) => {
 
 app.post( "/fb_webhook", ( req, res ) => {
     const data = req.body;
-    console.log( "POST /fb_webhook req body?", JSON.stringify( req.body ) );
   // Make sure this is a page subscription
     if ( data.object === "page" ) {
     // Iterate over each entry
