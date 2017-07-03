@@ -11,8 +11,11 @@ app.use( express.static( "public" ) );
 
 // TODO: Error handling if not 200
 app.get( "/", ( req, res ) => {
-    res.status( 200 )
-       .send( "This is a Fb chatbot." );
+    res.status( 200 ).send( "This is a Fb chatbot." );
+} );
+
+app.get( "/fb_webhook", ( req, res ) => {
+
 } );
 
 app.listen( app.get( "port" ), () => {
