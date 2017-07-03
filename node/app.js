@@ -46,7 +46,15 @@ app.get( "/", ( req, res ) => {
 } );
 
 app.get( "/fb_webhook", ( req, res ) => {
-
+    console.log( "what is req query from GET /webhook?", req.query );
+    if ( req.query[ "hub.mode" ] === "subscribe" &&
+      req.query[ "hub.verify_token" ] === VALIDATION_TOKEN ) {
+        console.log( "Validating webhook" );
+        res.status( 200 ).send( req.query[ "hub.challenge" ] );
+    } else {
+        console.error( "Failed validation. Make sure the validation tokens match." );
+        res.sendStatus( 403 );
+    }
 } );
 
 app.listen( app.get( "port" ), () => {
