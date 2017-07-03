@@ -1,0 +1,24 @@
+{
+  "name": "fb-chatbot-template",
+  "version": "1.0.0",
+  "description": "A Node.js Facebook chatbot template.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gary-w/fb-chatbot-template.git"
+  },
+  "author": "Gary Wong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gary-w/fb-chatbot-template/issues"
+  },
+  "homepage": "https://github.com/gary-w/fb-chatbot-template#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "request": "^2.81.0"
+  }
+}
