@@ -58,7 +58,7 @@ app.get( "/fb_webhook", ( req, res ) => {
 
 app.post( "/fb_webhook", ( req, res ) => {
     const data = req.body;
-    console.log( "POST /fb_webhook req body?", req.body );
+    console.log( "POST /fb_webhook req body?", JSON.stringify( req.body ) );
   // Make sure this is a page subscription
     if ( data.object === "page" ) {
     // Iterate over each entry
@@ -68,7 +68,10 @@ app.post( "/fb_webhook", ( req, res ) => {
             const timeOfEvent = pageEntry.time;
 
       // Iterate over each messaging event
+            console.log( "what are to be for eached?", pageEntry.messaging );
+            console.log( "what are to be for eached?", JSON.stringify( pageEntry.messaging ) );
             pageEntry.messaging.forEach( ( messagingEvent ) => {
+                console.log( "whats in this messaging event? ----------", messagingEvent );
                 if ( messagingEvent.optin ) {
                     receivedAuthentication( messagingEvent );
                 } else if ( messagingEvent.message ) {
@@ -117,16 +120,16 @@ const verifyRequestSignature = ( req, res, buf ) => {
 app.use( bodyParser.json( { verify: verifyRequestSignature } ) );
 
 function receivedAuthentication( event ) {
-    let senderID = event.sender.id;
-    let recipientID = event.recipient.id;
-    let timeOfAuth = event.timestamp;
+    const senderID = event.sender.id;
+    const recipientID = event.recipient.id;
+    const timeOfAuth = event.timestamp;
 
   // The 'ref' field is set in the 'Send to Messenger' plugin, in the 'data-ref'
   // The developer can set this to an arbitrary value to associate the
   // authentication callback with the 'Send to Messenger' click event. This is
   // a way to do account linking when the user clicks the 'Send to Messenger'
   // plugin.
-    let passThroughParam = event.optin.ref;
+    const passThroughParam = event.optin.ref;
 
     console.log( "Received authentication for user %d and page %d with pass " +
     "through param '%s' at %d", senderID, recipientID, passThroughParam,
@@ -153,44 +156,44 @@ function receivedAuthentication( event ) {
  */
 function receivedMessage( event ) {
     console.log( "whats the received message event param?", event );
-    let senderID = event.sender.id;
-    let recipientID = event.recipient.id;
-    let timeOfMessage = event.timestamp;
-    let message = event.message;
+    const senderID = event.sender.id;
+    const recipientID = event.recipient.id;
+    const timeOfMessage = event.timestamp;
+    const message = event.message;
 
     console.log( "Received message for user %d and page %d at %d with message:",
     senderID, recipientID, timeOfMessage );
     console.log( JSON.stringify( message ) );
 
-    let isEcho = message.is_echo;
-    let messageId = message.mid;
-    let appId = message.app_id;
-    let metadata = message.metadata;
+    const isEcho = message.is_echo;
+    const messageId = message.mid;
+    const appId = message.app_id;
+    const metadata = message.metadata;
 
   // You may get a text or attachment but not both
-    let messageText = message.text;
-    let messageAttachments = message.attachments;
-    let quickReply = message.quick_reply;
+    const messageText = message.text;
+    const messageAttachments = message.attachments;
+    const quickReply = message.quick_reply;
 
     if ( isEcho ) {
     // Just logging message echoes to console
-      console.log( "Received echo for message %s and app %d with metadata %s",
-      messageId, appId, metadata );
-      return;
-  } else if ( quickReply ) {
-      let quickReplyPayload = quickReply.payload;
-      console.log( "Quick reply for message %s with payload %s",
-      messageId, quickReplyPayload );
+        console.log( "Received echo for message %s and app %d with metadata %s",
+        messageId, appId, metadata );
+        return;
+    } else if ( quickReply ) {
+        const quickReplyPayload = quickReply.payload;
+        console.log( "Quick reply for message %s with payload %s",
+        messageId, quickReplyPayload );
 
-      sendTextMessage( senderID, "Quick reply tapped" );
-      return;
-  }
+        sendTextMessage( senderID, "Quick reply tapped" );
+        return;
+    }
 
     if ( messageText ) {
     // If we receive a text message, check to see if it matches any special
     // keywords and send back the corresponding example. Otherwise, just echo
     // the text we received.
-      switch ( messageText ) {
+        switch ( messageText ) {
     //   case 'image':
     //     sendImageMessage(senderID);
     //     break;
@@ -243,12 +246,12 @@ function receivedMessage( event ) {
     //     sendAccountLinking(senderID);
     //     break;
 
-    default:
-        sendTextMessage( senderID, messageText );
+        default:
+            sendTextMessage( senderID, messageText );
+        }
+    } else if ( messageAttachments ) {
+        sendTextMessage( senderID, "Message with attachment received" );
     }
-  } else if ( messageAttachments ) {
-      sendTextMessage( senderID, "Message with attachment received" );
-  }
 }
 
 /*
@@ -259,19 +262,19 @@ function receivedMessage( event ) {
  *
  */
 function receivedDeliveryConfirmation( event ) {
-    let senderID = event.sender.id;
-    let recipientID = event.recipient.id;
-    let delivery = event.delivery;
-    let messageIDs = delivery.mids;
-    let watermark = delivery.watermark;
-    let sequenceNumber = delivery.seq;
+    const senderID = event.sender.id;
+    const recipientID = event.recipient.id;
+    const delivery = event.delivery;
+    const messageIDs = delivery.mids;
+    const watermark = delivery.watermark;
+    const sequenceNumber = delivery.seq;
 
     if ( messageIDs ) {
-      messageIDs.forEach( (messageID) => {
-        console.log( "Received delivery confirmation for message ID: %s",
+        messageIDs.forEach( ( messageID ) => {
+            console.log( "Received delivery confirmation for message ID: %s",
         messageID );
-    } );
-  }
+        } );
+    }
 
     console.log( "All message before %d were delivered.", watermark );
 }
@@ -284,13 +287,13 @@ function receivedDeliveryConfirmation( event ) {
  *
  */
 function receivedPostback( event ) {
-    let senderID = event.sender.id;
-    let recipientID = event.recipient.id;
-    let timeOfPostback = event.timestamp;
+    const senderID = event.sender.id;
+    const recipientID = event.recipient.id;
+    const timeOfPostback = event.timestamp;
 
   // The 'payload' param is a developer-defined field which is set in a postback
   // button for Structured Messages.
-    let payload = event.postback.payload;
+    const payload = event.postback.payload;
 
     console.log( "Received postback for user %d and page %d with payload '%s' " +
     "at %d", senderID, recipientID, payload, timeOfPostback );
@@ -308,54 +311,55 @@ function receivedPostback( event ) {
  *
  */
 function receivedMessageRead( event ) {
-    let senderID = event.sender.id;
-    let recipientID = event.recipient.id;
+    const senderID = event.sender.id;
+    const recipientID = event.recipient.id;
 
   // All messages before watermark (a timestamp) or sequence have been seen.
-    let watermark = event.read.watermark;
-    let sequenceNumber = event.read.seq;
+    const watermark = event.read.watermark;
+    const sequenceNumber = event.read.seq;
 
     console.log( "Received message read event for watermark %d and sequence " +
     "number %d", watermark, sequenceNumber );
 }
 
 function sendTextMessage( recipientId, messageText ) {
-    let messageData = {
-      recipient: {
-        id: recipientId,
-    },
-      message: {
-        text: messageText,
-        metadata: "DEVELOPER_DEFINED_METADATA",
-    },
-  };
+    const messageData = {
+        recipient: {
+            id: recipientId,
+        },
+        message: {
+            text: messageText,
+            metadata: "DEVELOPER_DEFINED_METADATA",
+        },
+    };
 
     callSendAPI( messageData );
 }
 
 function callSendAPI( messageData ) {
     request( {
-      uri: "https://graph.facebook.com/v2.6/me/messages",
-      qs: { access_token: PAGE_ACCESS_TOKEN },
-      method: "POST",
-      json: messageData,
+        uri: "https://graph.facebook.com/v2.9/me/messages",
+        qs: { access_token: PAGE_ACCESS_TOKEN },
+        method: "POST",
+        json: messageData,
 
-  }, (error, response, body) => {
-      if ( !error && response.statusCode == 200 ) {
-        let recipientId = body.recipient_id;
-        let messageId = body.message_id;
+    }, ( error, response, body ) => {
+        if ( !error && response.statusCode === 200 ) {
+            const recipientId = body.recipient_id;
+            const messageId = body.message_id;
 
-        if ( messageId ) {
-          console.log( "Successfully sent message with id %s to recipient %s",
-          messageId, recipientId );
-      } else {
-          console.log( "Successfully called Send API for recipient %s",
-        recipientId );
-      }
-    } else {
-        console.error( "Failed calling Send API", response.statusCode, response.statusMessage, body.error );
-    }
-  } );
+            if ( messageId ) {
+              console.log( "Successfully sent message with id %s to recipient %s",
+              messageId, recipientId );
+          } else {
+              console.log( "Successfully called Send API for recipient %s",
+              recipientId );
+          }
+        } else {
+            console.error( "Failed calling Send API",
+            response.statusCode, response.statusMessage, body.error );
+        }
+    } );
 }
 
 app.listen( app.get( "port" ), () => {
