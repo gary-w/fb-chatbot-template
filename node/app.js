@@ -59,10 +59,12 @@ app.get( "/fb_webhook", ( req, res ) => {
 
 app.post( "/fb_webhook", ( req, res ) => {
     const data = req.body;
+    console.log('whats req body here?', data);
 
     if ( data.object === "page" ) {
         data.entry.forEach( ( pageEntry ) => {
             pageEntry.messaging.forEach( ( messagingEvent ) => {
+                console.log( "what is msgevent.msg?", messagingEvent.message );
                 if ( messagingEvent.message ) {
                     receivedMessage( messagingEvent );
                 } else if ( messagingEvent.delivery ) {
@@ -125,7 +127,7 @@ function receivedMessage( event ) {
 
     console.log( "Received message for user %d and page %d at %d with message:",
     senderID, recipientID, timeOfMessage );
-
+    console.log( 'what is message received?', message );
     const isEcho = message.is_echo;
     const messageId = message.mid;
     const appId = message.app_id;
