@@ -15,6 +15,10 @@ app.get( "/", ( req, res ) => {
        .send( "This is a Fb chatbot." );
 } );
 
+app.get( "/test", ( req, res ) => {
+    res.send( "hello..." );
+} );
+
 app.listen( app.get( "port" ), () => {
     console.log( "Fb chatbot is running on port", app.get( "port" ) );
 } );
