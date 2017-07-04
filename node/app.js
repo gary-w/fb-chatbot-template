@@ -100,20 +100,7 @@ const verifyRequestSignature = ( req, res, buf ) => {
 // TODO: Seperate auth in different folder so can import
 app.use( bodyParser.json( { verify: verifyRequestSignature } ) );
 
-/*
- * Message Event
- *
- * This event is called when a message is sent to your page. The 'message'
- * object format can vary depending on the kind of message that was received.
- * Read more at https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-received
- *
- * For this example, we're going to echo any text that we get. If we get some
- * special keywords ('button', 'generic', 'receipt'), then we'll send back
- * examples of those bubbles to illustrate the special message bubbles we've
- * created. If we receive a message with an attachment (image, video, audio),
- * then we'll simply confirm that we've received the attachment.
- *
- */
+// MESSAGE EVENT
 function receivedMessage( event ) {
     const senderID = event.sender.id;
     const recipientID = event.recipient.id;
@@ -122,30 +109,9 @@ function receivedMessage( event ) {
 
     console.log( "Received message for user %d and page %d at %d with message:",
     senderID, recipientID, timeOfMessage );
-    console.log( 'what is message received?', message );
-    const isEcho = message.is_echo;
-    const messageId = message.mid;
-    const appId = message.app_id;
-    const metadata = message.metadata;
 
-  // You may get a text or attachment but not both
     const messageText = message.text;
     const messageAttachments = message.attachments;
-    const quickReply = message.quick_reply;
-
-    if ( isEcho ) {
-    // Just logging message echoes to console
-        console.log( "Received echo for message %s and app %d with metadata %s",
-        messageId, appId, metadata );
-        return;
-    } else if ( quickReply ) {
-        const quickReplyPayload = quickReply.payload;
-        console.log( "Quick reply for message %s with payload %s",
-        messageId, quickReplyPayload );
-
-        sendTextMessage( senderID, "Quick reply tapped" );
-        return;
-    }
 
     if ( messageText ) {
         switch ( messageText ) {
@@ -155,10 +121,6 @@ function receivedMessage( event ) {
 
     //   case 'quick reply':
     //     sendQuickReply(senderID);
-    //     break;
-
-    //   case 'read receipt':
-    //     sendReadReceipt(senderID);
     //     break;
 
     //   case 'typing on':
@@ -181,36 +143,12 @@ function receivedPostback( event ) {
     const senderID = event.sender.id;
     const recipientID = event.recipient.id;
     const timeOfPostback = event.timestamp;
-
-  // The 'payload' param is a developer-defined field which is set in a postback
-  // button for Structured Messages.
     const payload = event.postback.payload;
 
     console.log( "Received postback for user %d and page %d with payload '%s' " +
     "at %d", senderID, recipientID, payload, timeOfPostback );
 
-  // When a postback is called, we'll send a message back to the sender to
-  // let them know it was successful
     sendTextMessage( senderID, "Postback called" );
-}
-
-/*
- * Message Read Event
- *
- * This event is called when a previously-sent message has been read.
- * https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-read
- *
- */
-function receivedMessageRead( event ) {
-    // const senderID = event.sender.id;
-    // const recipientID = event.recipient.id;
-
-  // All messages before watermark (a timestamp) or sequence have been seen.
-    const watermark = event.read.watermark;
-    const sequenceNumber = event.read.seq;
-
-    console.log( "Received message read event for watermark %d and sequence " +
-    "number %d", watermark, sequenceNumber );
 }
 
 function sendTextMessage( recipientId, messageText ) {
