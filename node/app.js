@@ -10,7 +10,6 @@ const app = express();
 
 app.set( "port", process.env.PORT || 1337 );
 app.use( bodyParser.urlencoded( { extended: false } ) );
-app.use( bodyParser.json() );
 app.use( bodyParser.json( { verify: auth.verifyRequestSignature } ) );
 app.use( express.static( "public" ) );
 
