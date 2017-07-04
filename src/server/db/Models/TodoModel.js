@@ -3,8 +3,8 @@ const mongoose = require( "mongoose" );
 const TodoSchema = mongoose.Schema( {
     List: [ {
         text: { type: String, required: true },
-        log: { type: mongoose.Schema.Types.ObjectId, ref: "Chatlog", required: true },
-        date: { type: Date, default: Date.now },
+        message_id: { type: mongoose.Schema.Types.ObjectId, ref: "Chatlog", required: true },
+        timestamp: { type: String, required: true },
     } ],
 } );
 

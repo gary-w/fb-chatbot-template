@@ -10,7 +10,7 @@ const receivedMessage = ( event ) => {
     console.log( "---senderID:", senderID );
     console.log( "---recipientID", recipientID );
     console.log( "---time of msg", timeOfMessage );
-    console.log( "---message text", message );
+    console.log( "---message text", message.text );
 
     console.log( "Received message for user %d and page %d at %d with message:",
     senderID, recipientID, timeOfMessage );
@@ -18,6 +18,9 @@ const receivedMessage = ( event ) => {
     const messageText = message.text;
     const messageAttachments = message.attachments;
 
+    // TODO: Ignore messages sent by the bot (is_echo)
+    // TODO: Ignore messages with non-text content
+    // TODO: Have good handling if unexpected payload
     if ( messageText ) {
         switch ( messageText ) {
     //   case 'button':
