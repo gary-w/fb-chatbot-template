@@ -5,6 +5,8 @@ const config = require( "config" );
 const dotenv = require( "dotenv" );
 const path = require( "path" );
 
+const auth = require( "./authorization" );
+
 const app = express();
 
 dotenv.config( { path: path.join( __dirname, "../.env" ) } );
@@ -14,24 +16,21 @@ app.set( "port", process.env.PORT || 1337 );
 // app.set( "view engine", "ejs" );
 app.use( bodyParser.urlencoded( { extended: false } ) );
 app.use( bodyParser.json() );
+app.use( bodyParser.json( { verify: auth.verifyRequestSignature } ) );
 app.use( express.static( "public" ) );
 
 const APP_SECRET = ( process.env.APP_SECRET ) ?
   process.env.APP_SECRET :
   config.get( "appSecret" );
 
-// Arbitrary value used to validate a webhook
 const VALIDATION_TOKEN = ( process.env.VALIDATION_TOKEN ) ?
   ( process.env.VALIDATION_TOKEN ) :
   config.get( "validationToken" );
 
-// Generate a page access token for your page from the App Dashboard
 const PAGE_ACCESS_TOKEN = ( process.env.PAGE_ACCESS_TOKEN ) ?
   ( process.env.PAGE_ACCESS_TOKEN ) :
   config.get( "pageAccessToken" );
 
-// URL where the app is running (include protocol). Used to point to scripts and
-// assets located at this address.
 const SERVER_URL = ( process.env.SERVER_URL ) ?
   ( process.env.SERVER_URL ) :
   config.get( "serverURL" );
@@ -77,28 +76,6 @@ app.post( "/fb_webhook", ( req, res ) => {
         res.sendStatus( 200 ); // send back a 200 within 20 seconds.
     }
 } );
-
-const verifyRequestSignature = ( req, res, buf ) => {
-    const signature = req.headers[ "x-hub-signature" ];
-
-    if ( !signature ) {
-        console.error( "Couldn't validate the signature." );
-    } else {
-        const elements = signature.split( "=" );
-        const signatureHash = elements[ 1 ];
-
-        const expectedHash = crypto.createHmac( "sha1", APP_SECRET )
-                        .update( buf )
-                        .digest( "hex" );
-
-        if ( signatureHash !== expectedHash ) {
-            throw new Error( "Couldn't validate the request signature." );
-        }
-    }
-};
-
-// TODO: Seperate auth in different folder so can import
-app.use( bodyParser.json( { verify: verifyRequestSignature } ) );
 
 // MESSAGE EVENT
 function receivedMessage( event ) {
