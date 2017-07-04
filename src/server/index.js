@@ -1,5 +1,5 @@
 const app = require( "./app" );
-// TODO: Need to require database index.js
+const db = require( "./db/index" );
 
 app.listen( app.get( "port" ), () => {
     console.log( "Fb chatbot is running on port", app.get( "port" ) );
