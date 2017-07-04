@@ -59,20 +59,15 @@ app.get( "/fb_webhook", ( req, res ) => {
 
 app.post( "/fb_webhook", ( req, res ) => {
     const data = req.body;
-    console.log('whats req body here?', data);
 
     if ( data.object === "page" ) {
         data.entry.forEach( ( pageEntry ) => {
+            // TODO: Check if the message is intended for the page
             pageEntry.messaging.forEach( ( messagingEvent ) => {
-                console.log( "what is msgevent.msg?", messagingEvent.message );
                 if ( messagingEvent.message ) {
                     receivedMessage( messagingEvent );
-                } else if ( messagingEvent.delivery ) {
-                    receivedDeliveryConfirmation( messagingEvent );
                 } else if ( messagingEvent.postback ) {
                     receivedPostback( messagingEvent );
-                } else if ( messagingEvent.read ) {
-                    receivedMessageRead( messagingEvent );
                 } else {
                     console.log( "Webhook received unknown messagingEvent: ", messagingEvent );
                 }
@@ -153,40 +148,9 @@ function receivedMessage( event ) {
     }
 
     if ( messageText ) {
-    // If we receive a text message, check to see if it matches any special
-    // keywords and send back the corresponding example. Otherwise, just echo
-    // the text we received.
         switch ( messageText ) {
-    //   case 'image':
-    //     sendImageMessage(senderID);
-    //     break;
-
-    //   case 'gif':
-    //     sendGifMessage(senderID);
-    //     break;
-
-    //   case 'audio':
-    //     sendAudioMessage(senderID);
-    //     break;
-
-    //   case 'video':
-    //     sendVideoMessage(senderID);
-    //     break;
-
-    //   case 'file':
-    //     sendFileMessage(senderID);
-    //     break;
-
     //   case 'button':
     //     sendButtonMessage(senderID);
-    //     break;
-
-    //   case 'generic':
-    //     sendGenericMessage(senderID);
-    //     break;
-
-    //   case 'receipt':
-    //     sendReceiptMessage(senderID);
     //     break;
 
     //   case 'quick reply':
@@ -213,38 +177,6 @@ function receivedMessage( event ) {
     }
 }
 
-/*
- * Delivery Confirmation Event
- *
- * This event is sent to confirm the delivery of a message. Read more about
- * these fields at https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-delivered
- *
- */
-function receivedDeliveryConfirmation( event ) {
-    // const senderID = event.sender.id;
-    // const recipientID = event.recipient.id;
-    const delivery = event.delivery;
-    const messageIDs = delivery.mids;
-    const watermark = delivery.watermark;
-    // const sequenceNumber = delivery.seq;
-
-    if ( messageIDs ) {
-        messageIDs.forEach( ( messageID ) => {
-            console.log( "Received delivery confirmation for message ID: %s",
-        messageID );
-        } );
-    }
-
-    console.log( "All message before %d were delivered.", watermark );
-}
-
-/*
- * Postback Event
- *
- * This event is called when a postback is tapped on a Structured Message.
- * https://developers.facebook.com/docs/messenger-platform/webhook-reference/postback-received
- *
- */
 function receivedPostback( event ) {
     const senderID = event.sender.id;
     const recipientID = event.recipient.id;
