@@ -8,6 +8,6 @@ const TodoSchema = mongoose.Schema( {
     } ],
 } );
 
-const Todo = mongoose.model( "Address", TodoSchema );
+const Todo = mongoose.model( "Todo", TodoSchema );
 
 module.exports = Todo;

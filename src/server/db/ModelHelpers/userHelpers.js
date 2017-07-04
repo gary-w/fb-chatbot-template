@@ -19,6 +19,13 @@ module.exports.ifUserIDExist = userID => {
 };
 
 module.exports.saveUser = userID => {
-
+    return User( {
+        user_id: userID,
+    } ).saveAsync()
+    .then( ( result ) => {
+        console.log( `Success in saving user: ${ result }` );
+    } )
+    .catch( ( err ) => {
+        console.log( `Error in saving user: ${ err }` );
+    } );
 };
-

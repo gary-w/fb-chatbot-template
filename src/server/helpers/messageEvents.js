@@ -1,5 +1,6 @@
 const send = require( "./actions" );
 const clh = require( "../db/ModelHelpers/chatlogHelpers" );
+const uh = require( "../db/ModelHelpers/userHelpers" );
 
 const sendTextMessage = send.sendTextMessage;
 
@@ -16,7 +17,18 @@ const receivedMessage = ( event ) => {
     const messageAttachments = message.attachments;
     const messageID = message.mid;
 
-    const saveToChatlogIfNew = () => clh.ifMessageIDExist( messageID )
+    const saveUserIfNew = userID => uh.ifUserIDExist( userID )
+        .then( ( bool ) => {
+            if ( !bool ) {
+                return uh.saveUser( userID );
+            }
+            return true;
+        } )
+        .catch( ( err ) => {
+            console.log( `Error in saving if user is new: ${ err }` );
+        } );
+
+    const saveChatlogIfNew = () => clh.ifMessageIDExist( messageID )
         .then( ( bool ) => {
             if ( !bool ) {
                 return clh.saveChatlog( senderID, recipientID, timeOfMessage, messageText, messageID );
@@ -24,7 +36,7 @@ const receivedMessage = ( event ) => {
             return true;
         } )
         .catch( ( err ) => {
-            console.log( err );
+            console.log( `Erorr in saving if message is new: ${ err }` );
         } );
 
     // TODO: Ignore messages sent by the bot (is_echo)
@@ -32,7 +44,9 @@ const receivedMessage = ( event ) => {
     // TODO: Have good handling if unexpected payload
     if ( messageText ) {
         // Store received message to database
-        saveToChatlogIfNew();
+        saveUserIfNew( senderID )
+        .then( () => saveUserIfNew( recipientID ) )
+        .then( () => saveChatlogIfNew() );
 
         switch ( messageText ) {
     //   case 'button':
