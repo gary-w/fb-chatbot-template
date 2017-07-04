@@ -8,13 +8,14 @@ const rh = require( "./request_handlers" );
 
 const app = express();
 
-dotenv.config( { path: path.join( __dirname, "../.env" ) } );
-dotenv.load();
-
 app.set( "port", process.env.PORT || 1337 );
 app.use( bodyParser.urlencoded( { extended: false } ) );
+app.use( bodyParser.json() );
 app.use( bodyParser.json( { verify: auth.verifyRequestSignature } ) );
 app.use( express.static( "public" ) );
+
+dotenv.config( { path: path.join( __dirname, "../.env" ) } );
+dotenv.load();
 
 app.route( "/fb_webhook" )
     .get( rh.validatePageAndToken )
