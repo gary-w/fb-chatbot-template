@@ -10,8 +10,8 @@ const callSendAPI = ( messageData ) => {
         method: "POST",
         json: messageData,
 
-    }, ( error, response, body ) => {
-        if ( !error && response.statusCode === 200 ) {
+    }, ( err, res, body ) => {
+        if ( !err && res.statusCode === 200 ) {
             const recipientId = body.recipient_id;
             const messageId = body.message_id;
 
@@ -24,7 +24,7 @@ const callSendAPI = ( messageData ) => {
             }
         } else {
             console.error( "Failed calling Send API",
-            response.statusCode, response.statusMessage, body.error );
+            res.statusCode, res.statusMessage, body.error );
         }
     } );
 };
