@@ -15,6 +15,7 @@ const receivedMessage = ( event ) => {
     const messageAttachments = message.attachments;
 
     if ( messageText ) {
+        console.log( "yes message text is valid:", messageText );
         switch ( messageText ) {
     //   case 'button':
     //     sendButtonMessage(senderID);
@@ -33,7 +34,7 @@ const receivedMessage = ( event ) => {
     //     break;
 
         default:
-            sendTextMessage( senderID, messageText );
+            console.log( sendTextMessage( senderID, messageText ) );
         }
     } else if ( messageAttachments ) {
         sendTextMessage( senderID, "Message with attachment received" );
