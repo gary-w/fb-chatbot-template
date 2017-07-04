@@ -1,6 +1,7 @@
 const mongoose = require( "mongoose" );
+const keys = require( "../helpers/keys" );
 
-const dbUrl = process.env.MONGODB_URI || "mongodb://localhost:27017/fb_chatbot_template";
+const dbUrl = process.env.MONGODB_URI || keys.MONGODB_URI;
 
 mongoose.connect( dbUrl );
 const db = mongoose.connection;

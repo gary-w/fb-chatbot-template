@@ -21,6 +21,11 @@ const SERVER_URL = ( process.env.SERVER_URL ) ?
   ( process.env.SERVER_URL ) :
   config.get( "serverURL" );
 
+// Optional if you want to run the chatbot using local server
+const MONGODB_URI = ( process.env.MONGODB_URI ) ?
+( process.env.MONGODB_URI ) :
+config.get( "mongodbURI" );
+
 if ( !( APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL ) ) {
     console.error( "Missing config values" );
     process.exit( 1 );
@@ -31,4 +36,5 @@ module.exports = {
     VALIDATION_TOKEN,
     PAGE_ACCESS_TOKEN,
     SERVER_URL,
+    MONGODB_URI,
 };

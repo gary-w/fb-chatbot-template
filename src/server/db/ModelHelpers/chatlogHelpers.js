@@ -18,9 +18,7 @@ module.exports.ifMessageIDExist = messageID => Chatlog.findOneAsync( { messageID
     } );
 
 module.exports.findUserObjID = userID => User.findOneAsync( { user_id: userID } )
-    .then( ( user ) => {
-        return user._id;
-    } )
+    .then( user => user._id )
     .catch( ( err ) => {
         console.log( `Error in finding user object ID: ${ err }` );
     } );
