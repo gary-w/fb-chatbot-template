@@ -1,6 +1,7 @@
 const express = require( "express" );
 const bodyParser = require( "body-parser" );
 
+const db = require( "./db/index" );
 const auth = require( "./requests/authorization" );
 const rh = require( "./requests/request_handlers" );
 
