@@ -19,8 +19,6 @@ module.exports.ifMessageIDExist = messageID => Chatlog.findOneAsync( { messageID
 
 module.exports.findUserObjID = userID => User.findOneAsync( { user_id: userID } )
     .then( ( user ) => {
-        console.log( "whats this user result? ", user );
-        console.log( "whats this user OBJ ID result? ", user._id );
         return user._id;
     } )
     .catch( ( err ) => {
@@ -36,7 +34,7 @@ module.exports.saveChatlog = ( senderID, recipientID, timestamp, messageText, me
         recipient_id: undefined,
     };
 
-    const getSenderObjID = userID => this.findUserObjID( userID )
+    const assignSenderObjID = userID => this.findUserObjID( userID )
     .then( ( objID ) => {
         chatlog.sender_id = objID;
     } )
@@ -44,7 +42,7 @@ module.exports.saveChatlog = ( senderID, recipientID, timestamp, messageText, me
         console.log( `Error in getting sender obj ID: ${ err }` );
     } );
 
-    const getRecipientObjID = userID => this.findUserObjID( userID )
+    const assignRecipientObjID = userID => this.findUserObjID( userID )
     .then( ( objID ) => {
         chatlog.recipient_id = objID;
     } )
@@ -52,8 +50,8 @@ module.exports.saveChatlog = ( senderID, recipientID, timestamp, messageText, me
         console.log( `Error in getting recipient obj ID: ${ err }` );
     } );
 
-    getSenderObjID( senderID )
-    .then( () => getRecipientObjID( recipientID ) )
+    assignSenderObjID( senderID )
+    .then( () => assignRecipientObjID( recipientID ) )
     .then( () => Chatlog( chatlog ).saveAsync()
     .then( ( result ) => {
         console.log( `Success in saving chatlog: ${ result }` );
