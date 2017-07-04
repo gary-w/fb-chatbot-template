@@ -1,10 +1,10 @@
 const express = require( "express" );
 const request = require( "request" );
 const bodyParser = require( "body-parser" );
-const config = require( "config" );
 const dotenv = require( "dotenv" );
 const path = require( "path" );
 
+const keys = require( "./keys.js" );
 const auth = require( "./authorization" );
 
 const app = express();
@@ -19,26 +19,8 @@ app.use( bodyParser.json() );
 app.use( bodyParser.json( { verify: auth.verifyRequestSignature } ) );
 app.use( express.static( "public" ) );
 
-const APP_SECRET = ( process.env.APP_SECRET ) ?
-  process.env.APP_SECRET :
-  config.get( "appSecret" );
-
-const VALIDATION_TOKEN = ( process.env.VALIDATION_TOKEN ) ?
-  ( process.env.VALIDATION_TOKEN ) :
-  config.get( "validationToken" );
-
-const PAGE_ACCESS_TOKEN = ( process.env.PAGE_ACCESS_TOKEN ) ?
-  ( process.env.PAGE_ACCESS_TOKEN ) :
-  config.get( "pageAccessToken" );
-
-const SERVER_URL = ( process.env.SERVER_URL ) ?
-  ( process.env.SERVER_URL ) :
-  config.get( "serverURL" );
-
-if ( !( APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL ) ) {
-    console.error( "Missing config values" );
-    process.exit( 1 );
-}
+const VALIDATION_TOKEN = keys.VALIDATION_TOKEN;
+const PAGE_ACCESS_TOKEN = keys.PAGE_ACCESS_TOKEN;
 
 // TODO: Error handling if not 200
 app.get( "/", ( req, res ) => {

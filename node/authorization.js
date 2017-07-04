@@ -1,4 +1,6 @@
-module.exports.verifyRequestSignature = ( req, res, buf ) => {
+const keys = require( "./keys" );
+
+const verifyRequestSignature = ( req, res, buf ) => {
     const signature = req.headers[ "x-hub-signature" ];
 
     if ( !signature ) {
@@ -7,7 +9,7 @@ module.exports.verifyRequestSignature = ( req, res, buf ) => {
         const elements = signature.split( "=" );
         const signatureHash = elements[ 1 ];
 
-        const expectedHash = crypto.createHmac( "sha1", APP_SECRET )
+        const expectedHash = crypto.createHmac( "sha1", keys.APP_SECRET )
                         .update( buf )
                         .digest( "hex" );
 
@@ -15,4 +17,8 @@ module.exports.verifyRequestSignature = ( req, res, buf ) => {
             throw new Error( "Couldn't validate the request signature." );
         }
     }
+};
+
+module.exports = {
+    verifyRequestSignature,
 };
