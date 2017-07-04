@@ -14,11 +14,8 @@ module.exports.ifMessageIDExist = ( messageID ) => {
         return true;
     } )
     .catch( ( err ) => {
-        console.log( err );
+        console.log( `Error in checking if message ID exist: ${ err }` );
     } );
-};
-
-module.exports.ifUserIDExist = userID => {
 };
 
 module.exports.saveChatlog = ( senderID, recipientID, timestamp, messageText, messageID ) => {
@@ -35,8 +32,4 @@ module.exports.saveChatlog = ( senderID, recipientID, timestamp, messageText, me
     .catch( ( err ) => {
         console.log( `Error in saving chatlog: ${ err }` );
     } );
-};
-
-module.exports.saveUser = ( userID ) => {
-
 };
