@@ -7,6 +7,10 @@ const receivedMessage = ( event ) => {
     const recipientID = event.recipient.id;
     const timeOfMessage = event.timestamp;
     const message = event.message;
+    console.log( "---senderID:", senderID );
+    console.log( "---recipientID", recipientID );
+    console.log( "---time of msg", timeOfMessage );
+    console.log( "---message text", message );
 
     console.log( "Received message for user %d and page %d at %d with message:",
     senderID, recipientID, timeOfMessage );
@@ -15,7 +19,6 @@ const receivedMessage = ( event ) => {
     const messageAttachments = message.attachments;
 
     if ( messageText ) {
-        console.log( "yes message text is valid:", messageText );
         switch ( messageText ) {
     //   case 'button':
     //     sendButtonMessage(senderID);
@@ -34,7 +37,7 @@ const receivedMessage = ( event ) => {
     //     break;
 
         default:
-            console.log( sendTextMessage( senderID, messageText ) );
+            sendTextMessage( senderID, messageText );
         }
     } else if ( messageAttachments ) {
         sendTextMessage( senderID, "Message with attachment received" );
