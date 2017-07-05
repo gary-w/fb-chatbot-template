@@ -69,7 +69,7 @@ const receivedMessage = ( event ) => {
             sendTextMessage( senderID, messageText );
         }
     } else if ( messageAttachments ) {
-        sendTextMessage( senderID, "Message with attachment received" );
+        sendTextMessage( senderID, "Thanks for your message! We'll let you know when we support non-text content." );
     }
 };
 
