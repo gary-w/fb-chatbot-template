@@ -1,7 +1,7 @@
 const send = require( "./actions" );
 const clh = require( "../db/ModelHelpers/chatlogHelpers" );
 const uh = require( "../db/ModelHelpers/userHelpers" );
-const tdh = require( "../db/ModelHelpers/todoHelpers" );
+const lh = require( "../db/ModelHelpers/listHelpers" );
 const actions = require( "../helpers/actions" );
 
 const sendTextMessage = send.sendTextMessage;
@@ -65,10 +65,10 @@ const receivedMessage = ( event ) => {
          * Check if messageText is for ADDing or LISTing onto the todo list
          */
         if ( ifTextIncludeTerm( messageText, "add " ) ) {
-            tdh.saveTodo( messageText, timeOfMessage );
+            lh.saveTodo( messageText, timeOfMessage );
             sendTextMessage( senderID, "Your item is added to the grocery list." );
         } else if ( ifTextIncludeTerm( messageText, "list" ) ) {
-            return tdh.getAllTodo()
+            return lh.getAllTodo()
             .then( ( list ) => {
                 const subject = "This is your grocery list: \n";
                 const todo = subject.concat( "- ", list.join( "\n- " ) );

@@ -1,5 +1,4 @@
-const Chatlog = require( "../Models/ChatlogModel" );
-const Todo = require( "../Models/TodoModel" );
+const List = require( "../Models/ListModel" );
 const mongoose = require( "mongoose" );
 
 const Promise = require( "bluebird" );
@@ -8,7 +7,7 @@ Promise.promisifyAll( mongoose );
 
 module.exports.saveTodo = ( messageText, timestamp ) => {
     const task = messageText.slice( 4 );
-    return Todo( {
+    return List( {
         text: task,
         timestamp,
     } ).saveAsync()
@@ -22,7 +21,7 @@ module.exports.saveTodo = ( messageText, timestamp ) => {
 
 module.exports.getAllTodo = () => {
     const result = [];
-    return Todo.findAsync()
+    return List.findAsync()
     .then( ( tasks ) => {
         tasks.forEach( ( task ) => {
             result.push( task.text );
