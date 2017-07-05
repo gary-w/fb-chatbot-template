@@ -20,7 +20,7 @@ app.use( express.static( "public" ) );
 /**
  * Create "get started" button at messenger launch
  */
-actions.createGetStartedButton();
+// actions.createGetStartedButton();
 
 /**
  * Facebook Webhook

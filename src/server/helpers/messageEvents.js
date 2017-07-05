@@ -1,6 +1,7 @@
 const send = require( "./actions" );
 const clh = require( "../db/ModelHelpers/chatlogHelpers" );
 const uh = require( "../db/ModelHelpers/userHelpers" );
+const actions = require( "../helpers/actions" );
 
 const sendTextMessage = send.sendTextMessage;
 
@@ -16,6 +17,8 @@ const receivedMessage = ( event ) => {
     const messageText = message.text;
     const messageAttachments = message.attachments;
     const messageID = message.mid;
+
+    actions.createGetStartedButton( senderID );
 
     const saveUserIfNew = userID => uh.ifUserIDExist( userID )
         .then( ( bool ) => {
@@ -40,8 +43,6 @@ const receivedMessage = ( event ) => {
         } );
 
     // TODO: Ignore messages sent by the bot (is_echo)
-    // TODO: Ignore messages with non-text content
-    // TODO: Have good handling if unexpected payload
     if ( messageText ) {
         // Store received message to database
         saveUserIfNew( senderID )
@@ -82,8 +83,13 @@ const receivedPostback = ( event ) => {
     console.log( "Received postback for user %d and page %d with payload '%s' " +
     "at %d", senderID, recipientID, payload, timeOfPostback );
 
+    actions.createGetStartedButton( senderID );
+
     if ( payload !== "GET_STARTED_PAYLOAD" ) {
         sendTextMessage( senderID, "Postback called" );
+    } else {
+        // TODO: Use Facebook's in-built setGreetingText
+        sendTextMessage( senderID, "Hey, ask me anything!" );
     }
 };
 
