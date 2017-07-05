@@ -9,8 +9,15 @@ const sendTextMessage = ( recipientId, messageText ) => {
         },
         message: {
             text: messageText,
-            metadata: "DEVELOPER_DEFINED_METADATA",
         },
+    };
+
+    callSendAPI( messageData );
+};
+
+const createGetStartedButton = () => {
+    const messageData = {
+        get_started: { payload: "GET_STARTED_PAYLOAD" },
     };
 
     callSendAPI( messageData );
@@ -18,4 +25,5 @@ const sendTextMessage = ( recipientId, messageText ) => {
 
 module.exports = {
     sendTextMessage,
+    createGetStartedButton,
 };

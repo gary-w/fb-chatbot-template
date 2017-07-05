@@ -4,6 +4,7 @@ const bodyParser = require( "body-parser" );
 const db = require( "./db/index" );
 const auth = require( "./requests/authorization" );
 const rh = require( "./requests/request_handlers" );
+const actions = require( "./helpers/actions" );
 
 const app = express();
 
@@ -15,6 +16,11 @@ app.use( bodyParser.urlencoded( { extended: false } ) );
 app.use( bodyParser.json() );
 app.use( bodyParser.json( { verify: auth.verifyRequestSignature } ) );
 app.use( express.static( "public" ) );
+
+/**
+ * Create "get started" button at messenger launch
+ */
+actions.createGetStartedButton();
 
 /**
  * Facebook Webhook
