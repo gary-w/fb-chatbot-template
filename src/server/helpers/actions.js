@@ -23,7 +23,21 @@ const createGetStartedButton = () => {
     callSendAPI( messageData );
 };
 
+const setGreetingText = () => {
+    const messageData = {
+        greeting: [
+            {
+                locale: "default",
+                text: "Hey {{user_first_name}}, ask me anything!",
+            },
+        ],
+    };
+
+    callSendAPI( messageData );
+};
+
 module.exports = {
     sendTextMessage,
     createGetStartedButton,
+    setGreetingText,
 };

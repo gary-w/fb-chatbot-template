@@ -82,7 +82,9 @@ const receivedPostback = ( event ) => {
     console.log( "Received postback for user %d and page %d with payload '%s' " +
     "at %d", senderID, recipientID, payload, timeOfPostback );
 
-    sendTextMessage( senderID, "Postback called" );
+    if ( payload !== "GET_STARTED_PAYLOAD" ) {
+        sendTextMessage( senderID, "Postback called" );
+    }
 };
 
 module.exports = {
