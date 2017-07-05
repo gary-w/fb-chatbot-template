@@ -56,7 +56,7 @@ const receivedMessage = ( event ) => {
         .then( () => saveUserIfNew( recipientID ) )
         .then( () => {
             // Database doesn't store messages sent by the bot
-            if ( !isEcho ) {
+            if ( !isEcho && messageText !== "list" ) {
                 saveChatlogIfNew();
             }
         } );
@@ -66,6 +66,7 @@ const receivedMessage = ( event ) => {
          */
         if ( ifTextIncludeTerm( messageText, "add " ) ) {
             tdh.saveTodo( messageText, timeOfMessage );
+            sendTextMessage( senderID, "Your item is added to the grocery list." );
         } else if ( ifTextIncludeTerm( messageText, "list" ) ) {
             return tdh.getAllTodo()
             .then( ( list ) => {
@@ -77,12 +78,7 @@ const receivedMessage = ( event ) => {
                 console.log( `Error in parsing todo list: ${ err }` );
             } );
         } else {
-            console.log( "Message text doesn't contain add or list." ); 
-        }
-
-        switch ( messageText ) {
-        default:
-            sendTextMessage( senderID, "Your message is received." );
+            sendTextMessage( senderID, "Thanks for your message. Try adding groceries and then list them out." );
         }
     } else if ( messageAttachments ) {
         sendTextMessage( senderID, "Thanks for your message! We'll let you know when we support non-text content." );
