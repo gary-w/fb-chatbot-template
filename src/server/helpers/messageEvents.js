@@ -12,7 +12,6 @@ const ifTextIncludeTerm = ( text, term ) => {
 };
 
 const receivedMessage = ( event ) => {
-    console.log( "mu9 event is htis?----------", event );
     const senderID = event.sender.id;
     const recipientID = event.recipient.id;
     const timeOfMessage = event.timestamp;
@@ -54,7 +53,7 @@ const receivedMessage = ( event ) => {
     if ( messageAttachments ) {
         sendTextMessage( senderID, "Thanks for your message! We'll let you know when we support non-text content. Have you tried using the grocery list yet?" );
     } else if ( messageText ) {
-            // Store received message to database
+        // Store received message to database
         saveUserIfNew( senderID )
             .then( () => saveUserIfNew( recipientID ) )
             .then( () => {
@@ -64,13 +63,18 @@ const receivedMessage = ( event ) => {
                 }
             } );
 
-            /**
-             * Check if messageText is for ADDing or LISTing onto the grocery list
-             */
+        /**
+         * Check if user intends to add item to grocery list
+         */
         if ( !isEcho && ifTextIncludeTerm( messageText, "add " ) ) {
             lh.saveTodo( messageText, timeOfMessage );
             sendTextMessage( senderID, "The item has been added to the grocery list! You can see your full list by typing 'list'." );
-        } else if ( ifTextIncludeTerm( messageText, "list" ) ) {
+        }
+
+        /**
+         * Check if user intends to see the full grocery list
+         */
+        if ( ifTextIncludeTerm( messageText, "list" ) ) {
             return lh.getAllTodo()
                 .then( ( list ) => {
                     const subject = "This is your grocery list: \n";
