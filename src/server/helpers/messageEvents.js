@@ -12,6 +12,7 @@ const ifTextIncludeTerm = ( text, term ) => {
 };
 
 const receivedMessage = ( event ) => {
+    console.log( "mu9 event is htis?----------", event );
     const senderID = event.sender.id;
     const recipientID = event.recipient.id;
     const timeOfMessage = event.timestamp;
@@ -50,38 +51,38 @@ const receivedMessage = ( event ) => {
         } );
 
     // TODO: Ignore messages sent by the bot (is_echo)
-    if ( messageText ) {
-        // Store received message to database
+    if ( messageAttachments ) {
+        sendTextMessage( senderID, "Thanks for your message! We'll let you know when we support non-text content. Have you tried using the grocery list yet?" );
+    } else if ( messageText ) {
+            // Store received message to database
         saveUserIfNew( senderID )
-        .then( () => saveUserIfNew( recipientID ) )
-        .then( () => {
-            // Database doesn't store messages sent by the bot
-            if ( !isEcho && messageText !== "list" ) {
-                saveChatlogIfNew();
-            }
-        } );
+            .then( () => saveUserIfNew( recipientID ) )
+            .then( () => {
+                // Database doesn't store messages sent by the bot
+                if ( !isEcho && messageText !== "list" ) {
+                    saveChatlogIfNew();
+                }
+            } );
 
-        /**
-         * Check if messageText is for ADDing or LISTing onto the todo list
-         */
-        if ( ifTextIncludeTerm( messageText, "add " ) ) {
+            /**
+             * Check if messageText is for ADDing or LISTing onto the grocery list
+             */
+        if ( !isEcho && ifTextIncludeTerm( messageText, "add " ) ) {
             lh.saveTodo( messageText, timeOfMessage );
-            sendTextMessage( senderID, "Your item is added to the grocery list." );
+            sendTextMessage( senderID, "The item has been added to the grocery list! You can see your full list by typing 'list'." );
         } else if ( ifTextIncludeTerm( messageText, "list" ) ) {
             return lh.getAllTodo()
-            .then( ( list ) => {
-                const subject = "This is your grocery list: \n";
-                const todo = subject.concat( "- ", list.join( "\n- " ) );
-                sendTextMessage( senderID, todo );
-            } )
-            .catch( ( err ) => {
-                console.log( `Error in parsing todo list: ${ err }` );
-            } );
+                .then( ( list ) => {
+                    const subject = "This is your grocery list: \n";
+                    const todo = subject.concat( "- ", list.join( "\n- " ) );
+                    sendTextMessage( senderID, todo );
+                } )
+                .catch( ( err ) => {
+                    console.log( `Error in parsing todo list: ${ err }` );
+                } );
         } else {
-            sendTextMessage( senderID, "Thanks for your message. Try adding groceries and then list them out." );
+            sendTextMessage( senderID, "Thanks for your message :). Are you trying to add items to your grocery list? It's really easy, just type 'add' followed by the name of the items." );
         }
-    } else if ( messageAttachments ) {
-        sendTextMessage( senderID, "Thanks for your message! We'll let you know when we support non-text content." );
     }
 };
 
@@ -99,8 +100,8 @@ const receivedPostback = ( event ) => {
     if ( payload !== "GET_STARTED_PAYLOAD" ) {
         sendTextMessage( senderID, "Postback called" );
     } else {
-        // TODO: Use Facebook's in-built setGreetingText
-        sendTextMessage( senderID, "Hey, ask me anything!" );
+        // TODO: Implement Facebook's in-built setGreetingText
+        sendTextMessage( senderID, "Hey welcome :)! I'm your grocery tracker. Why don't you start off adding some items to your grocery list?" );
     }
 };
 
