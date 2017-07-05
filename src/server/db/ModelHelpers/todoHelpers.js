@@ -21,5 +21,15 @@ module.exports.saveTodo = ( messageText, timestamp ) => {
 };
 
 module.exports.getAllTodo = () => {
-
+    const result = [];
+    return Todo.findAsync()
+    .then( ( tasks ) => {
+        tasks.forEach( ( task ) => {
+            result.push( task.text );
+        } );
+        return result;
+    } )
+    .catch( ( err ) => {
+        console.log( `Error in getting all todo: ${ err }` );
+    } );
 };

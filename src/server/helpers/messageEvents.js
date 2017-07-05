@@ -23,12 +23,12 @@ const receivedMessage = ( event ) => {
     const messageText = message.text;
     const messageAttachments = message.attachments;
     const messageID = message.mid;
+    const isEcho = event.message.is_echo;
 
     actions.createGetStartedButton( senderID );
 
     const saveUserIfNew = userID => uh.ifUserIDExist( userID )
         .then( ( bool ) => {
-            console.log( "bool???", bool );
             if ( !bool ) {
                 return uh.saveUser( userID );
             }
@@ -54,18 +54,30 @@ const receivedMessage = ( event ) => {
         // Store received message to database
         saveUserIfNew( senderID )
         .then( () => saveUserIfNew( recipientID ) )
-        .then( () => saveChatlogIfNew() );
+        .then( () => {
+            // Database doesn't store messages sent by the bot
+            if ( !isEcho ) {
+                saveChatlogIfNew();
+            }
+        } );
 
-        switch ( true ) {
-        case ifTextIncludeTerm( messageText, "add " ):
-            // TODO: Add back owner and messageId
+        /**
+         * Check if messageText is for ADDing or LISTing onto the todo list
+         */
+        if ( ifTextIncludeTerm( messageText, "add " ) ) {
             tdh.saveTodo( messageText, timeOfMessage );
-            break;
-        case ifTextIncludeTerm( messageText, "list " ):
-            tdh.getAllTodo();
-            break;
-        default:
-            console.log( "Message text doesn't contain add or list." );
+        } else if ( ifTextIncludeTerm( messageText, "list" ) ) {
+            return tdh.getAllTodo()
+            .then( ( list ) => {
+                const subject = "This is your grocery list: \n";
+                const todo = subject.concat( "- ", list.join( "\n- " ) );
+                sendTextMessage( senderID, todo );
+            } )
+            .catch( ( err ) => {
+                console.log( `Error in parsing todo list: ${ err }` );
+            } );
+        } else {
+            console.log( "Message text doesn't contain add or list." ); 
         }
 
         switch ( messageText ) {
