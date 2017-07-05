@@ -49,7 +49,6 @@ const receivedMessage = ( event ) => {
             console.log( `Erorr in saving if message is new: ${ err }` );
         } );
 
-    // TODO: Ignore messages sent by the bot (is_echo)
     if ( messageAttachments ) {
         sendTextMessage( senderID, "Thanks for your message! We'll let you know when we support non-text content. Have you tried using the grocery list yet?" );
     } else if ( messageText ) {
@@ -62,24 +61,22 @@ const receivedMessage = ( event ) => {
                     saveChatlogIfNew();
                 }
             } );
-
         /**
-         * Check if user intends to add item to grocery list
+         * Check if user intends to add item to grocery list, or view the whole list
          */
         if ( !isEcho && ifTextIncludeTerm( messageText, "add " ) ) {
             lh.saveTodo( messageText, timeOfMessage );
             sendTextMessage( senderID, "The item has been added to the grocery list! You can see your full list by typing 'list'." );
-        }
-
-        /**
-         * Check if user intends to see the full grocery list
-         */
-        if ( ifTextIncludeTerm( messageText, "list" ) ) {
+        } else if ( ifTextIncludeTerm( messageText, "list" ) ) {
             return lh.getAllTodo()
                 .then( ( list ) => {
-                    const subject = "This is your grocery list: \n";
-                    const todo = subject.concat( "- ", list.join( "\n- " ) );
-                    sendTextMessage( senderID, todo );
+                    if ( list.length < 1 ) {
+                        sendTextMessage( senderID, "Your grocery list is currently empty. Try adding an item by typing 'add' followed by an item! :)" );
+                    } else {
+                        const subject = "This is your grocery list: \n";
+                        const todo = subject.concat( "- ", list.join( "\n- " ) );
+                        sendTextMessage( senderID, todo );
+                    }
                 } )
                 .catch( ( err ) => {
                     console.log( `Error in parsing todo list: ${ err }` );
