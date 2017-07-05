@@ -6,7 +6,7 @@ const Promise = require( "bluebird" );
 
 Promise.promisifyAll( mongoose );
 
-module.exports.ifMessageIDExist = messageID => Chatlog.findOneAsync( { messageID } )
+module.exports.ifMessageIDExist = messageID => Chatlog.findOneAsync( { message_id: messageID } )
     .then( ( chatlog ) => {
         if ( !chatlog ) {
             return false;

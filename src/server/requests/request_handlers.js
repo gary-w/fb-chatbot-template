@@ -20,7 +20,6 @@ const routeMessageEvents = ( req, res ) => {
         data.entry.forEach( ( pageEntry ) => {
             // TODO: Check if the message is intended for the page
             pageEntry.messaging.forEach( ( messagingEvent ) => {
-                console.log( "whats in this messaging event?", messagingEvent);
                 if ( messagingEvent.message ) {
                     events.receivedMessage( messagingEvent );
                 } else if ( messagingEvent.postback ) {

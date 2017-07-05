@@ -1,9 +1,15 @@
 const send = require( "./actions" );
 const clh = require( "../db/ModelHelpers/chatlogHelpers" );
 const uh = require( "../db/ModelHelpers/userHelpers" );
+const tdh = require( "../db/ModelHelpers/todoHelpers" );
 const actions = require( "../helpers/actions" );
 
 const sendTextMessage = send.sendTextMessage;
+
+const ifTextIncludeTerm = ( text, term ) => {
+    const messageText = text.toLowerCase().trim();
+    return !!messageText.includes( term );
+};
 
 const receivedMessage = ( event ) => {
     const senderID = event.sender.id;
@@ -22,6 +28,7 @@ const receivedMessage = ( event ) => {
 
     const saveUserIfNew = userID => uh.ifUserIDExist( userID )
         .then( ( bool ) => {
+            console.log( "bool???", bool );
             if ( !bool ) {
                 return uh.saveUser( userID );
             }
@@ -49,25 +56,21 @@ const receivedMessage = ( event ) => {
         .then( () => saveUserIfNew( recipientID ) )
         .then( () => saveChatlogIfNew() );
 
-        switch ( messageText ) {
-    //   case 'button':
-    //     sendButtonMessage(senderID);
-    //     break;
-
-    //   case 'quick reply':
-    //     sendQuickReply(senderID);
-    //     break;
-
-    //   case 'typing on':
-    //     sendTypingOn(senderID);
-    //     break;
-
-    //   case 'typing off':
-    //     sendTypingOff(senderID);
-    //     break;
-
+        switch ( true ) {
+        case ifTextIncludeTerm( messageText, "add " ):
+            // TODO: Add back owner and messageId
+            tdh.saveTodo( messageText, timeOfMessage );
+            break;
+        case ifTextIncludeTerm( messageText, "list " ):
+            tdh.getAllTodo();
+            break;
         default:
-            sendTextMessage( senderID, messageText );
+            console.log( "Message text doesn't contain add or list." );
+        }
+
+        switch ( messageText ) {
+        default:
+            sendTextMessage( senderID, "Your message is received." );
         }
     } else if ( messageAttachments ) {
         sendTextMessage( senderID, "Thanks for your message! We'll let you know when we support non-text content." );

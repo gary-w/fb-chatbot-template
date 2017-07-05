@@ -6,7 +6,7 @@ const Promise = require( "bluebird" );
 Promise.promisifyAll( mongoose );
 
 module.exports.ifUserIDExist = userID => {
-    return User.findOneAsync( { userID } )
+    return User.findOneAsync( { user_id: userID } )
     .then( ( user ) => {
         if ( !user ) {
             return false;
